@@ -1,9 +1,11 @@
 {
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "strict": true,
-    "jsx": "react-jsx",
-    "jsxFragmentFactory": "Fragment",
-    "jsxImportSource": "hono/jsx"
-  }
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"strict": true,
+		"jsx": "react-jsx",
+		// "jsxFragmentFactory": "Fragment",
+		"jsxImportSource": "hono/jsx",
+		"lib": ["ES2015"],
+		"types": ["bun-types"]
+	}
 }
