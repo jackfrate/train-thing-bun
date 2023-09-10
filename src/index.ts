@@ -1,53 +1,16 @@
 import { Hono } from "hono";
-import { cors } from "hono/cors";
 
+import { cors } from "hono/cors";
 import { ArrivalsResponse } from "./types/CTA.types";
 import { makeTrainTimesTypeNotSuck } from "./types/remap-arrivals-response";
+import { DBConnector } from "./util/stations-controller";
 
 const app = new Hono();
 
-app.use(
-	"*",
-	cors({
-		origin: "http://localhost:3000",
-		allowHeaders: ["Content-Type", "Authorization"],
-		allowMethods: ["POST", "GET", "OPTIONS"],
-		exposeHeaders: ["Content-Length"],
-		maxAge: 600,
-		credentials: true,
-	})
-);
-app.options("*", (c) => {
-	return c.text("", 204);
-});
-
-// app.use(
-// 	"/*",
-// 	cors({
-// 		// TODO: make env var
-// 		// origin: "http://localhost:8080",
-// 		origin: "*",
-// 		allowHeaders: [
-// 			"X-Custom-Header",
-// 			"Upgrade-Insecure-Requests",
-// 			"Access-Control-Allow-Origin",
-// 		],
-// 		allowMethods: [
-// 			"POST",
-// 			"GET",
-// 			"OPTIONS",
-// 			"HEAD",
-// 			"PUT",
-// 			"DELETE",
-// 			"PATCH",
-// 		],
-// 		exposeHeaders: ["Access-Control-Allow-Origin"],
-// 		maxAge: 600,
-// 	})
-// );
-
 // This is not as complete as I'd like, but I'm trying to learn a new
-// framework in bun
+// framework in bun and make a server from scratch.
+// It'll be expanded and properly organized as I move along
+app.use("*", cors());
 
 app.get("/", (c) =>
 	c.json({ message: "you'll find nothing at this endpoint lol" })
@@ -65,6 +28,12 @@ app.get("/timesAtStop/:id", async (c) => {
 	);
 
 	return c.json(convertedType);
+});
+
+app.get("/stations", async (c) => {
+	const connector = new DBConnector();
+	const res = await connector.getStations();
+	return c.json(res);
 });
 
 export default app;
